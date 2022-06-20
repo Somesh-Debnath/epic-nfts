@@ -1,4 +1,6 @@
 import React, {useState,useEffect} from 'react';
+import { ethers } from "ethers";
+import myEpicNFT from '../src/utils/MyEpicNFT.json';
 import './App.css';
 import twitterLogo from './assests/twitter-logo.svg';
 
@@ -31,7 +33,28 @@ const App = () => {
       console.log("No authorized account found");
     }
   }
-  const connectWallet = async () => {
+  const askContractToMint= async()=>{
+    const CONTRACT_ADDRESS='0x5deaf134e6328153201e366B8c4212BedBc911F1'
+    try{
+      const {ethereum}=window;
+       if(ethereum){
+        const provider=new ethers.providers.Web3Provider(ethereum);
+        const signer=provider.getSigner()
+        const connectedContract=new ethers.Contract(CONTRACT_ADDRESS,myEpicNFT.abi,signer);
+        console.log("Going to pop wallet now to pay gas...")
+      let nftTxn = await connectedContract.makeAnEpicNFT();
+      console.log("Mining......Please Wait")
+      await nftTxn.wait()
+      console.log(`Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`);
+
+    } else {
+      console.log("Ethereum object doesn't exist!");
+    }
+  } catch (error) {
+    console.log(error)
+  }
+       }
+   const connectWallet = async () => {
     try {
       const { ethereum } = window;
 
@@ -60,6 +83,11 @@ const App = () => {
       Connect to Wallet
     </button>
   );
+  const mintNFTbtn=()=>(
+    <button onClick={askContractToMint} className="cta-button connect-wallet-button">
+    Mint NFT
+  </button>
+  )
 useEffect(()=>{
   checkIfWalletIsConnected();
 },[])
@@ -73,9 +101,7 @@ useEffect(()=>{
           </p>
           {currentAccount==="" ?(
           renderNotConnectedContainer()):(
-            <button onClick={null} className="cta-button connect-wallet-button">
-              Mint NFT
-            </button>
+            mintNFTbtn()
           )}
         </div>
         <div className="footer-container">
