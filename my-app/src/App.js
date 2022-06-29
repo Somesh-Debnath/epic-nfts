@@ -13,7 +13,7 @@ const CONTRACT_ADDRESS = "0x41d288E1817b7CF60d3FE829095d0bEE40fadFDE";
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [networkId, setNetworkId] = useState();
-  const [nftMinted, setNftMinted] = useState();
+  const [nftMinted, setNftMinted] = useState(0);
   const [minting, setMinting] = useState(false);
 
   const checkIfWalletIsConnected = useCallback(async () => {
@@ -46,8 +46,11 @@ const App = () => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
-  }, [checkIfWalletIsConnected]);
-
+    setNftMinted(JSON.parse(localStorage.getItem("nftMinted")));
+  }, []);
+useEffect(() => {
+  localStorage.setItem("nftMinted", JSON.stringify(nftMinted)); 
+},[nftMinted]);
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
