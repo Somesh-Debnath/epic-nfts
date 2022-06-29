@@ -13,7 +13,7 @@ const CONTRACT_ADDRESS = "0x41d288E1817b7CF60d3FE829095d0bEE40fadFDE";
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [networkId, setNetworkId] = useState();
-  const [nftMinted, setNftMinted] = useState(0);
+  const [nftMinted, setNftMinted] = useState();
   const [minting, setMinting] = useState(false);
 
   const checkIfWalletIsConnected = useCallback(async () => {
@@ -94,7 +94,7 @@ const App = () => {
     // Most of this looks the same as our function askContractToMintNft
     try {
       const { ethereum } = window;
-
+    
       if (ethereum) {
         // Same stuff again
         const provider = new ethers.providers.Web3Provider(ethereum);
@@ -179,7 +179,10 @@ const App = () => {
           <p className="sub-text">
             Each unique. Each beautiful. Discover your NFT today.
           </p>
-          <h4 className='sub-text'>{nftMinted}/50 NFTs have been minted</h4>
+          {nftMinted>0 ? (<h4 className='sub-text'>{nftMinted}/50 NFTs have been minted</h4>)
+          :
+          (<h4 className='sub-text'>0/50 NFTs have been minted</h4>)}
+          
           {currentAccount === "" ? renderNotConnectedContainer() : renderMintUI()}{" "}
         </div>
         <div className="footer-container">
