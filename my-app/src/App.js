@@ -1,5 +1,6 @@
 import "./styles/App.css";
 import twitterLogo from "./assests/twitter-logo.svg";
+import {BsGithub} from "react-icons/bs";
 import React, { useEffect, useState, useCallback } from "react";
 import { ethers } from "ethers";
 import myEpicNft from "./utils/MyEpicNFT.json";
@@ -9,13 +10,51 @@ const MY_TWITTER_HANDLE = "SomeshDebnath73";
 const MY_TWITTER_LINK=`https://twitter.com/${MY_TWITTER_HANDLE}`;
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const CONTRACT_ADDRESS = "0x41d288E1817b7CF60d3FE829095d0bEE40fadFDE";
+const INFURA_API_KEY="9aa3d95b3bc440fa88ea12eaa4456161"
+const networks={
+  polygon: {
+    chainId: `0x${Number(137).toString(16)}`,
+    chainName: "Polygon Mainnet",
+    nativeCurrency: {
+      name: "MATIC",
+      symbol: "MATIC",
+      decimals: 18
+    },
+    rpcUrls: ["https://polygon-rpc.com/"],
+    blockExplorerUrls: ["https://polygonscan.com/"]
+  },
+};
+const changeNetwork = async ({ networkName, setError }) => {
+  try {
+    if (!window.ethereum) throw new Error("No crypto wallet found");
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [
+        {
+          ...networks[networkName],
+          rpcUrls:["https://polygon-rpc.com/"]
+        }
+      ]
+    });
+    console.log(networks[networkName])
+  } catch (err) {
+    setError(err.message);
+  }
+};
+
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [networkId, setNetworkId] = useState();
   const [nftMinted, setNftMinted] = useState(0);
   const [minting, setMinting] = useState(false);
+  const [error, setError] = useState();
 
+ 
+  const handleNetworkSwitch = async (networkName) => {
+    setError();
+    await changeNetwork({ networkName, setError });
+  };
   const checkIfWalletIsConnected = useCallback(async () => {
     const { ethereum } = window;
 
@@ -42,15 +81,13 @@ const App = () => {
       console.log(chainId);
       setNetworkId(parseInt(chainId, 16));
     });
+    
   }, []);
 
   useEffect(() => {
     checkIfWalletIsConnected();
-    setNftMinted(JSON.parse(localStorage.getItem("nftMinted")));
-  }, []);
-useEffect(() => {
-  localStorage.setItem("nftMinted", JSON.stringify(nftMinted)); 
-},[nftMinted]);
+      }, [checkIfWalletIsConnected]);
+
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
@@ -74,25 +111,45 @@ useEffect(() => {
   const renderNotConnectedContainer = () => (
     <button
       onClick={connectWallet}
-      className="cta-button connect-wallet-button"
+      className="btn  background-animate"
     >
       Connect to Wallet
     </button>
   );
 
-  const renderMintUI = () => (
+  const renderMintUI = () => {
+   return (
+    
     <button
       onClick={askContractToMintNft}
-      disabled={networkId !== 4}
-      className="cta-button connect-wallet-button"
-    >
-      {networkId !== 4
-        ? "Wrong Network! Switch to Rinkeby."
-        : minting
+      className="btn background-animate"
+      >
+      {
+        minting
         ? "Minting..."
         : "Mint NFT"}
     </button>
-  );
+   )
+}
+  const renderchangeNetworkUI=()=>(
+    <button
+    onClick={()=>handleNetworkSwitch('Rinkeby')}
+    className="btn background-animate"
+    > Change Network to Rinkeby
+    </button>
+  )
+
+  const networkChanged = (chainId) => {
+    console.log({ chainId });
+  };
+
+  useEffect(() => {
+    window.ethereum.on("chainChanged", networkChanged);
+
+    return () => {
+      window.ethereum.removeListener("chainChanged", networkChanged);
+    };
+  }, []);
   const setupEventListener = async () => {
     // Most of this looks the same as our function askContractToMintNft
     try {
@@ -174,42 +231,65 @@ useEffect(() => {
       console.log(error);
     }
   };
+
   return (
-    <div className="App">
-      <div className="container">
-        <div className="header-container">
-          <p className="header gradient-text">My NFT Collection</p>
-          <p className="sub-text">
+    <div className="h-screen font-sans w-screen content-center overflow-hidden
+    
+    bg-gradient-to-r from-yellow-400 via-gray-50 to-teal-300
+     text-center text-black font-bold justify-center pt-3 md:pt-24
+    
+    items-center">
+    
+      <div className="flex flex-col h-full space-y-62">
+        <div className="pt-[30px]">
+          <p className="text-6xl text-center py-4 
+          font-semibold text-transparent bg-clip-text 
+          bg-gradient-to-r from-blue-400 to-[#0F172A]">My NFT Collection</p>
+          <p className="text-[25px] font-semibold py-2">
             Each unique. Each beautiful. Discover your NFT today.
           </p>
-          {nftMinted>0 ? (<h4 className='sub-text'>{nftMinted}/50 NFTs have been minted</h4>)
-          :
-          (<h4 className='sub-text'>0/50 NFTs have been minted</h4>)}
-          
-          {currentAccount === "" ? renderNotConnectedContainer() : renderMintUI()}{" "}
+         <h4 className='text-[25px] font-semibold py-2 
+         '>{nftMinted}/50 NFTs have been minted</h4>
+                  
+          {currentAccount === "" ? renderNotConnectedContainer() 
+          :(networkId === 4)? renderMintUI():renderchangeNetworkUI()}{" "}
         </div>
-        <div className="footer-container">
-        <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
-            <a
-            className="footer-text"
+        <div className="absolute bottom-0 w-full flex justify-center items-center ">
+        <div className='transition ease-in-out delay-150 flex justify-center items-center mr-4 hover:-translate-y-1 hover:underline'>
+          <img alt="Twitter Logo" className="object-contain w-9 h-9" src={twitterLogo} />
+          <a
             href={TWITTER_LINK}
             target="_blank"
             rel="noreferrer"
           >{`built on @${TWITTER_HANDLE}`}</a>
-          <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
+        </div>
+        <div className='transition ease-in-out delay-150 flex justify-center items-center hover:-translate-y-1 hover:underline'>
+        <img alt="Twitter Logo" className="object-contain w-9 h-9" src={twitterLogo} />
           <a
-            className="footer-text"
             href={MY_TWITTER_LINK}
             target="_blank"
             rel="noreferrer"
-          >{`built by @${MY_TWITTER_HANDLE}`}</a>
+          >
+            built by {`@${MY_TWITTER_HANDLE}`}
+          </a>          
+        </div>
+        </div>
            <a
-            className="footer-text"
+            className=" absolute top-4 right-8 px-4 py-2 font-semibold rounded-md
+            block bg-orange-400 transition duration-400 hover:scale-105 hover:bg-blue-600"
             href={`https://testnets.opensea.io/collection/squarenft-24oboflpdc`}
             target="_blank"
             rel="noreferrer"
-          >{`🌊 View Collection on OpenSea`}</a>
-        </div>
+          >{`🌊 View Collection`}</a>
+     <a 
+          className='transition ease-in-out delay-150 p-2 absolute top-2 left-4 text-2xl rounded-md  hover:text-blue-800'
+          href="https://github.com/Somesh-Debnath/epic-nfts"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <BsGithub/> 
+      </a>
+       
       </div>
     </div>
     
