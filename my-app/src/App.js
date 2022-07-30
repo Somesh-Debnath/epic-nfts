@@ -4,6 +4,7 @@ import {BsGithub} from "react-icons/bs";
 import React, { useEffect, useState, useCallback } from "react";
 import { ethers } from "ethers";
 import myEpicNft from "./utils/MyEpicNFT.json";
+import DarkModeToggle from "react-dark-mode-toggle";
 // Constants
 const TWITTER_HANDLE = "_buildspace";
 const MY_TWITTER_HANDLE = "SomeshDebnath73";
@@ -11,6 +12,7 @@ const MY_TWITTER_LINK=`https://twitter.com/${MY_TWITTER_HANDLE}`;
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const CONTRACT_ADDRESS = "0x41d288E1817b7CF60d3FE829095d0bEE40fadFDE";
 const INFURA_API_KEY="9aa3d95b3bc440fa88ea12eaa4456161"
+
 const networks={
   polygon: {
     chainId: `0x${Number(137).toString(16)}`,
@@ -49,8 +51,13 @@ const App = () => {
   const [nftMinted, setNftMinted] = useState(0);
   const [minting, setMinting] = useState(false);
   const [error, setError] = useState();
+  const [darkMode, setDarkMode] = React.useState(true)
+    
+    function toggleDarkMode() {
+        setDarkMode(prevMode => !prevMode)
+    }
 
- 
+
   const handleNetworkSwitch = async (networkName) => {
     setError();
     await changeNetwork({ networkName, setError });
@@ -234,28 +241,33 @@ const App = () => {
 
   return (
     <div className="h-screen font-sans w-screen content-center overflow-hidden
-    
-    bg-gradient-to-r from-yellow-400 via-gray-50 to-teal-300
-     text-center text-black font-bold justify-center pt-3 md:pt-24
-    
+    bg-gradient-to-r from-red-400 via-gray-300 to-blue-500  text-center text-black font-bold justify-center pt-20 md:pt-24
     items-center">
     
       <div className="flex flex-col h-full space-y-62">
-        <div className="pt-[30px]">
-          <p className="text-6xl text-center py-4 
-          font-semibold text-transparent bg-clip-text 
-          bg-gradient-to-r from-blue-400 to-[#0F172A]">My NFT Collection</p>
-          <p className="text-[25px] font-semibold py-2">
-            Each unique. Each beautiful. Discover your NFT today.
+        <div className="pt-[30px] ">
+          <h1 className="text-2xl md:text-6xl text-center py-4 
+          font-bold text-transparent bg-clip-text 
+          bg-[#0F172A]">Get your own NFT</h1>
+          <p className="text-lg object-contain md:text-[25px] font-semibold py-2">
+            Each unique. 
+            Each beautiful. 
+            Discover your NFT today.
           </p>
-         <h4 className='text-[25px] font-semibold py-2 
+         <h4 className='text-lg object-contain md:text-[25px] font-semibold py-2 
          '>{nftMinted}/50 NFTs have been minted</h4>
                   
           {currentAccount === "" ? renderNotConnectedContainer() 
           :(networkId === 4)? renderMintUI():renderchangeNetworkUI()}{" "}
+
+          <p className="py-4 text-xl text-gray-800 text-center md:mx-96">A non-fungible token is a non-interchangeable unit of
+             data stored on a blockchain, a form of digital ledger, that can be 
+             sold and traded. Types of NFT data units may be associated with digital
+              files such as photos, videos, and audio.
+          </p>
         </div>
         <div className="absolute bottom-0 w-full flex justify-center items-center ">
-        <div className='transition ease-in-out delay-150 flex justify-center items-center mr-4 hover:-translate-y-1 hover:underline'>
+        <div className='transition pb-8 md:pb-0 ease-in-out delay-150 flex justify-center items-center mr-4 hover:-translate-y-1 hover:underline'>
           <img alt="Twitter Logo" className="object-contain w-9 h-9" src={twitterLogo} />
           <a
             href={TWITTER_LINK}
@@ -263,7 +275,8 @@ const App = () => {
             rel="noreferrer"
           >{`built on @${TWITTER_HANDLE}`}</a>
         </div>
-        <div className='transition ease-in-out delay-150 flex justify-center items-center hover:-translate-y-1 hover:underline'>
+        <div className='transition pb-8 md:pb-0
+        ease-in-out delay-150 flex justify-center items-center hover:-translate-y-1 hover:underline'>
         <img alt="Twitter Logo" className="object-contain w-9 h-9" src={twitterLogo} />
           <a
             href={MY_TWITTER_LINK}
@@ -275,12 +288,12 @@ const App = () => {
         </div>
         </div>
            <a
-            className=" absolute top-4 right-8 px-4 py-2 font-semibold rounded-md
+            className=" absolute top-4 right-12 md:right-8 md:px-4 md:py-2 font-semibold rounded-md
             block bg-orange-400 transition duration-400 hover:scale-105 hover:bg-blue-600"
             href={`https://testnets.opensea.io/collection/squarenft-24oboflpdc`}
             target="_blank"
             rel="noreferrer"
-          >{`🌊 View Collection`}</a>
+          >{`🌊 `}</a>
      <a 
           className='transition ease-in-out delay-150 p-2 absolute top-2 left-4 text-2xl rounded-md  hover:text-blue-800'
           href="https://github.com/Somesh-Debnath/epic-nfts"
@@ -289,7 +302,7 @@ const App = () => {
         >
           <BsGithub/> 
       </a>
-       
+     
       </div>
     </div>
     
