@@ -5,8 +5,8 @@
 @layer base{
     .btn{
         @apply px-[40px] py-2  font-bold text-lg
-        cursor-pointer rounded-full mt-2 w-auto border-none h-[45px]
-        bg-gradient-to-r from-red-400 to-red-800
+        cursor-pointer rounded mt-2 w-auto border-none h-[45px]
+        bg-gradient-to-r from-purple-500 to-red-700
        
         text-white
         

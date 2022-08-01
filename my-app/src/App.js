@@ -241,8 +241,8 @@ const App = () => {
 
   return (
     <div className="h-screen font-sans w-screen content-center overflow-hidden
-    bg-gradient-to-r from-red-400 via-gray-300 to-blue-500  text-center text-black font-bold justify-center pt-20 md:pt-24
-    items-center">
+    bg-gradient-to-r from-red-400 via-gray-300 to-blue-500 text-center text-black font-bold pt-16 md:pt-20
+    items-center justify-center">
     
       <div className="flex flex-col h-full space-y-62">
         <div className="pt-[30px] ">
@@ -256,15 +256,14 @@ const App = () => {
           </p>
          <h4 className='text-lg object-contain md:text-[25px] font-semibold py-2 
          '>{nftMinted}/50 NFTs have been minted</h4>
-                  
+         <div className="flex flex-col items-center py-2 ">         
           {currentAccount === "" ? renderNotConnectedContainer() 
           :(networkId === 4)? renderMintUI():renderchangeNetworkUI()}{" "}
 
-          <p className="py-4 text-xl text-gray-800 text-center md:mx-96">A non-fungible token is a non-interchangeable unit of
-             data stored on a blockchain, a form of digital ledger, that can be 
-             sold and traded. Types of NFT data units may be associated with digital
-              files such as photos, videos, and audio.
-          </p>
+          <a href="https://www.theverge.com/22310188/nft-explainer-what-is-blockchain-crypto-art-faq"
+          target="blank"
+          className="btn px-[68px] background-animate mt-4">Learn More</a>
+          </div>
         </div>
         <div className="absolute bottom-0 w-full flex justify-center items-center ">
         <div className='transition pb-8 md:pb-0 ease-in-out delay-150 flex justify-center items-center mr-4 hover:-translate-y-1 hover:underline'>
@@ -288,7 +287,7 @@ const App = () => {
         </div>
         </div>
            <a
-            className=" absolute top-4 right-12 md:right-8 md:px-4 md:py-2 font-semibold rounded-md
+            className=" absolute top-4 right-5 md:right-8 md:px-4 md:py-2 font-semibold rounded-md
             block bg-orange-400 transition duration-400 hover:scale-105 hover:bg-blue-600"
             href={`https://testnets.opensea.io/collection/squarenft-24oboflpdc`}
             target="_blank"
